@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Besties Bazaar - Categories</title>
+<style>
+  /* ===== BODY & FULL SCREEN BACKGROUND ===== */
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  body {
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #000000, #0000FF); /* black + blue */
+    color: #00FFFF;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s, color 0.3s;
+  }
+  body.dark-mode {
+    background: linear-gradient(135deg, #111111, #00008B);
+    color: #00FFFF;
+  }
+
+  /* ===== TOP NAVBAR ===== */
+  .top-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #000000, #0000FF);
+    color: #00FFFF;
+    font-size: 24px;
+  }
+  body.dark-mode .top-navbar {
+    background: linear-gradient(135deg, #111111, #00008B);
+  }
+  .top-navbar .logo {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .top-navbar .logo span.text-logo {
+    font-weight: bold;
+    background: linear-gradient(90deg, #00FFFF, #0000FF);
+    -webkit-background-clip: text;
+    color: transparent;
+    font-size: 24px;
+  }
+  .top-navbar .nav-icons span {
+    margin-left: 15px;
+    cursor: pointer;
+  }
+
+  /* ===== PAGE TITLE ===== */
+  h1 {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: #00FFFF;
+  }
+  body.dark-mode h1 {
+    color: #00FFFF;
+  }
+
+  /* ===== CATEGORIES GRID ===== */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 25px;
+    padding: 20px;
+    flex-grow: 1;
+  }
+  .category-card {
+    background-color: rgba(0,0,255,0.1);
+    border-radius: 15px;
+    text-align: center;
+    padding: 20px 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-size: 40px;
+    color: #00FFFF;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .category-card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,255,0.4);
+  }
+  .category-card p {
+    margin: 10px 0 0 0;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  /* ===== BOTTOM NAVBAR ===== */
+  .bottom-navbar {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    background: linear-gradient(135deg, #000000, #0000FF);
+    font-size: 24px;
+  }
+  body.dark-mode .bottom-navbar {
+    background: linear-gradient(135deg, #111111, #00008B);
+  }
+  .bottom-navbar span {
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAVBAR -->
+<div class="top-navbar">
+  <div class="logo">
+    <span style="font-size:28px;">🛍️</span>
+    <span class="text-logo">Besties Bazaar</span>
+  </div>
+  <div class="nav-icons">
+    <span onclick="toggleDarkMode()">🌙</span>
+  </div>
+</div>
+
+<!-- PAGE TITLE -->
+<h1>Shop by Categories</h1>
+
+<!-- CATEGORIES GRID -->
+<div class="categories-grid">
+  <a class="category-card" href="tees.html">👕<p>Tees</p></a>
+  <a class="category-card" href="cakes.html">🎂<p>Cakes</p></a>
+  <a class="category-card" href="watches.html">⌚<p>Watches</p></a>
+  <a class="category-card" href="bracelets.html">📿<p>Bracelets</p></a>
+  <a class="category-card" href="chains.html">⛓️<p>Chains</p></a>
+  <a class="category-card" href="cups.html">☕<p>Cups</p></a>
+  <a class="category-card" href="photoframes.html">🖼️<p>Photo Frames</p></a>
+  <a class="category-card" href="more.html">✨<p>More</p></a>
+</div>
+
+<!-- BOTTOM NAVBAR -->
+<div class="bottom-navbar">
+  <span onclick="navigateHome()">🏠</span>
+  <span>📂</span>
+  <span onclick="navigateOrders()">🛒</span>
+  <span onclick="navigateGroupShopping()">👥</span>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+}
+
+function navigateHome() {
+  window.location.href = 'index.html';
+}
+function navigateOrders() {
+  window.location.href = 'orders.html';
+}
+function navigateGroupShopping() {
+  window.location.href = 'group-shopping.html';
+}
+</script>
+
+</body>
+</html>

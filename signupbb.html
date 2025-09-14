@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Besties Bazaar - Signup</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #000000, #0a1f33);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+      width: 350px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 100px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #00bfff;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 14px;
+    }
+
+    input::placeholder {
+      color: #bbb;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #0d3b66;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #145da0;
+      box-shadow: 0 0 15px rgba(20, 93, 160, 0.7);
+    }
+
+    .link {
+      margin-top: 15px;
+      display: block;
+      color: #87cefa;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .error {
+      color: #ff6b6b;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Logo -->
+    <img src="logo.png" alt="Besties Bazaar Logo" class="logo">
+
+    <h2>Create Account</h2>
+
+    <!-- Signup Form -->
+    <form id="signupForm">
+      <input type="text" id="fullname" placeholder="Full Name">
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
+      <input type="password" id="confirmPassword" placeholder="Confirm Password">
+      <input type="text" id="captcha" placeholder="Enter Captcha: 1234">
+      <button type="submit" class="btn">Signup</button>
+      <p id="errorMsg" class="error"></p>
+    </form>
+
+    <!-- Link to Login -->
+    <a href="loginbb.html" class="link">Already have an account? Login</a>
+  </div>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      let fullname = document.getElementById("fullname").value.trim();
+      let email = document.getElementById("email").value.trim().toLowerCase();
+      let password = document.getElementById("password").value.trim();
+      let confirmPassword = document.getElementById("confirmPassword").value.trim();
+      let captcha = document.getElementById("captcha").value.trim();
+      let errorMsg = document.getElementById("errorMsg");
+
+      if (!fullname || !email || !password || !confirmPassword || !captcha) {
+        errorMsg.textContent = "All fields are required!";
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        errorMsg.textContent = "Passwords do not match!";
+        return;
+      }
+
+      if (captcha !== "1234") {
+        errorMsg.textContent = "Invalid captcha!";
+        return;
+      }
+
+      // ✅ Store signup data in localStorage
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userPassword", password);
+
+      errorMsg.style.color = "#00ff7f";
+      errorMsg.textContent = "Signup successful! Redirecting...";
+
+      setTimeout(() => {
+        window.location.href = "loginbb.html";
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

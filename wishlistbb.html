@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Wishlist - Besties Bazaar</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #0f0f1a; /* dark black background */
+    color: #ffffff;
+  }
+  h1 {
+    text-align: center;
+    color: #00bfff; /* blue title */
+  }
+  .wishlist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  .wishlist-item {
+    border: 1px solid #00bfff;
+    border-radius: 12px;
+    padding: 10px;
+    width: 180px;
+    text-align: center;
+    background: #1a1a2e; /* dark blue card */
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .wishlist-item:hover {
+    transform: scale(1.05);
+  }
+  .wishlist-item img {
+    width: 100%;
+    border-radius: 12px;
+  }
+  .remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+  }
+  p {
+    margin: 5px 0 0 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>My Wishlist</h1>
+<div class="wishlist" id="wishlist"></div>
+
+<script>
+  // Function to get wishlist from localStorage
+  function getWishlist() {
+    return JSON.parse(localStorage.getItem('wishlist')) || [];
+  }
+
+  // Function to save wishlist to localStorage
+  function saveWishlist(wishlist) {
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  }
+
+  // Render wishlist
+  function renderWishlist() {
+    const wishlistDiv = document.getElementById('wishlist');
+    const wishlist = getWishlist();
+    wishlistDiv.innerHTML = ""; // clear current list
+
+    if (wishlist.length === 0) {
+      wishlistDiv.innerHTML = "<p style='color:#ccc'>Your wishlist is empty.</p>";
+      return;
+    }
+
+    wishlist.forEach(product => {
+      const item = document.createElement('div');
+      item.className = "wishlist-item";
+      item.innerHTML = `
+        <img src="${product.img}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>${product.price}</p>
+        <button class="remove-btn">&times;</button>
+      `;
+
+      // Remove product
+      item.querySelector('.remove-btn').addEventListener('click', () => {
+        const updatedWishlist = getWishlist().filter(p => p.name !== product.name);
+        saveWishlist(updatedWishlist);
+        renderWishlist();
+      });
+
+      wishlistDiv.appendChild(item);
+    });
+  }
+
+  // Initial render
+  renderWishlist();
+</script>
+
+</body>
+</html>

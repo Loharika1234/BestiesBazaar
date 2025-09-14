@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BestiesBazaar</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #000000; /* Dominant black background */
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: #808080; /* Grey text */
+    }
+    .navbar {
+      background-color: #000000; /* Black navbar */
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(135, 206, 235, 0.3); /* Sky blue shadow */
+    }
+    .navbar img {
+      height: 50px;
+      vertical-align: middle;
+      transition: transform 0.3s ease;
+    }
+    .navbar img:hover {
+      transform: scale(1.1);
+    }
+    .navbar a {
+      color: #87CEEB; /* Sky blue */
+      margin: 0 20px;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+    .navbar a:hover {
+      color: #76c2e0; /* Lighter sky blue */
+    }
+    .section {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 25px;
+      background: #1a1a3d; /* Dark navy for contrast */
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(135, 206, 235, 0.2); /* Sky blue shadow */
+    }
+    #reminder-section {
+      text-align: center;
+      background: linear-gradient(135deg, #1a1a3d 0%, #000000 100%); /* Navy to black gradient */
+      padding: 40px;
+      border: 2px solid #87CEEB; /* Sky blue border */
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(135, 206, 235, 0.3); /* Sky blue shadow */
+      margin: 50px auto;
+      max-width: 500px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    input {
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #87CEEB; /* Sky blue border */
+      border-radius: 8px;
+      background: #000000; /* Black input bg */
+      color: #808080; /* Grey text */
+    }
+    button {
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #808080; /* Grey button */
+      color: #000000; /* Black text for contrast */
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    button:hover {
+      background-color: #666666; /* Darker grey */
+      transform: translateY(-2px);
+    }
+    #reminder-history {
+      display: none; /* Hidden by default */
+      max-height: 300px;
+      overflow-y: auto;
+      background: #1a1a3d; /* Navy background */
+      padding: 15px;
+      border: 1px solid #87CEEB; /* Sky blue border */
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .history-item {
+      padding: 10px;
+      border-bottom: 1px solid #808080; /* Grey border */
+      margin: 5px 0;
+    }
+    #status {
+      margin-top: 10px;
+      color: #808080; /* Grey text */
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="#home">Home</a>
+    <a href="#reminder-history">Reminder History</a>
+    <!-- Logo Integration -->
+    <img src="https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/1757825434538.jpg" alt="BestiesBazaar Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Logo+Not+Found'">
+    <!-- Replace with your logo URL or upload logo.png -->
+  </div>
+
+  <!-- Reminder Section -->
+  <div class="section" id="reminder-section">
+    <h2>Set a Reminder</h2>
+    <form id="reminder-form">
+      <label for="event-name">Event Name:</label>
+      <input type="text" id="event-name" required>
+      <label for="reminder-date">Select Date:</label>
+      <input type="date" id="reminder-date" required>
+      <button type="submit">Set Reminder</button>
+    </form>
+    <div id="status"></div>
+    <button id="show-history" style="margin-top: 20px;">Show Reminder History</button>
+    <div id="reminder-history"></div>
+  </div>
+
+  <!-- JavaScript (Deferred to avoid DOM issues) -->
+  <script defer>
+    // Error handling wrapper
+    function safeExecute(fn) {
+      try {
+        fn();
+      } catch (error) {
+        console.error('Error:', error);
+        const status = document.getElementById('status');
+        if (status) status.innerText = 'An error occurred. Check console.';
+      }
+    }
+
+    // DOM Content Loaded ensures all elements are available
+    document.addEventListener('DOMContentLoaded', () => {
+      // Reminder Feature
+      safeExecute(() => {
+        const form = document.getElementById('reminder-form');
+        if (form) {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const eventName = document.getElementById('event-name')?.value;
+            const reminderDate = document.getElementById('reminder-date')?.value;
+            if (eventName && reminderDate) {
+              let reminders = [];
+              try {
+                reminders = JSON.parse(localStorage.getItem('reminders') || '[]');
+              } catch (e) {
+                console.warn('Invalid JSON in localStorage, resetting:', e);
+                reminders = [];
+              }
+              reminders.push({ eventName, reminderDate, timestamp: new Date().toLocaleString() });
+              localStorage.setItem('reminders', JSON.stringify(reminders));
+              const status = document.getElementById('status');
+              if (status) status.innerText = 'Reminder set successfully!';
+              form.reset();
+              updateReminderHistory();
+            }
+          });
+        }
+      });
+
+      // Check Reminders on Page Load
+      safeExecute(() => {
+        const today = new Date().toISOString().split('T')[0];
+        let reminders = [];
+        try {
+          reminders = JSON.parse(localStorage.getItem('reminders') || '[]');
+        } catch (e) {
+          console.warn('Invalid JSON in localStorage, resetting:', e);
+          reminders = [];
+        }
+        const todayReminders = reminders.filter(r => r.reminderDate === today);
+        if (todayReminders.length > 0) {
+          todayReminders.forEach(r => alert(`Reminder: ${r.eventName} today!`));
+          localStorage.setItem('reminders', JSON.stringify(reminders.filter(r => r.reminderDate !== today)));
+        }
+        updateReminderHistory();
+      });
+
+      // Update Reminder History
+      function updateReminderHistory() {
+        safeExecute(() => {
+          let reminders = [];
+          try {
+            reminders = JSON.parse(localStorage.getItem('reminders') || '[]');
+          } catch (e) {
+            console.warn('Invalid JSON in localStorage, resetting:', e);
+            reminders = [];
+          }
+          const historyDiv = document.getElementById('reminder-history');
+          if (historyDiv) {
+            historyDiv.innerHTML = '';
+            reminders.forEach((r, index) => {
+              const item = document.createElement('div');
+              item.className = 'history-item';
+              item.innerHTML = `${r.eventName} on ${r.reminderDate} (Set: ${r.timestamp}) <button onclick="deleteReminder(${index})">Delete</button>`;
+              historyDiv.appendChild(item);
+            });
+          }
+        });
+      }
+
+      // Delete Reminder
+      window.deleteReminder = function(index) {
+        safeExecute(() => {
+          let reminders = [];
+          try {
+            reminders = JSON.parse(localStorage.getItem('reminders') || '[]');
+          } catch (e) {
+            console.warn('Invalid JSON in localStorage, resetting:', e);
+            reminders = [];
+          }
+          if (index >= 0 && index < reminders.length) {
+            reminders.splice(index, 1);
+            localStorage.setItem('reminders', JSON.stringify(reminders));
+            updateReminderHistory(); // Ensure UI updates after deletion
+          }
+        });
+      };
+
+      // Show/Hide Reminder History
+      safeExecute(() => {
+        const showBtn = document.getElementById('show-history');
+        const historyDiv = document.getElementById('reminder-history');
+        if (showBtn && historyDiv) {
+          showBtn.addEventListener('click', () => {
+            historyDiv.style.display = historyDiv.style.display === 'block' ? 'none' : 'block';
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

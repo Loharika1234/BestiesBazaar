@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Besties Bazaar - Tees</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  /* ===== Root & Theme ===== */
+  :root {
+    --primary-color: #0d1b2a; /* dark blue */
+    --secondary-color: #1b263b; /* darker shade */
+    --accent-color: #415a77; /* lighter blue */
+    --text-color: #ffffff;
+    --card-bg: #1b263b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+
+  body {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-color);
+    min-height: 100vh;
+  }
+
+  /* ===== Navbar ===== */
+  .navbar {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: var(--secondary-color);
+  }
+  .navbar i {
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 20px;
+  }
+  .navbar h1 {
+    font-size: 22px;
+  }
+
+  /* ===== Filters & Sort ===== */
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: var(--accent-color);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .controls select {
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+  }
+
+  /* ===== Products Grid ===== */
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+  .product-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .product-card:hover {
+    transform: scale(1.05);
+  }
+  .product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .product-card h3 {
+    margin-bottom: 5px;
+    font-size: 18px;
+  }
+  .product-card p {
+    font-size: 16px;
+    color: #ffd700; /* gold price */
+  }
+
+  /* ===== Popup ===== */
+  .popup {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .popup-content {
+    background: var(--secondary-color);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+  }
+  .popup-content img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .popup-content button {
+    margin-top: 10px;
+    padding: 5px 15px;
+    background: #ffd700;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Navbar ===== -->
+<div class="navbar">
+  <i class="fas fa-arrow-left" onclick="history.back()"></i>
+  <h1>Tees</h1>
+</div>
+
+<!-- ===== Filters & Sort ===== -->
+<div class="controls">
+  <div>
+    <label>Filter by Price: </label>
+    <select id="priceFilter">
+      <option value="all">All</option>
+      <option value="low">Below ₹500</option>
+      <option value="mid">₹500 - ₹1000</option>
+      <option value="high">Above ₹1000</option>
+    </select>
+  </div>
+  <div>
+    <label>Sort By: </label>
+    <select id="sortBy">
+      <option value="default">Default</option>
+      <option value="asc">Price Low to High</option>
+      <option value="desc">Price High to Low</option>
+    </select>
+  </div>
+</div>
+
+<!-- ===== Products ===== -->
+<div class="products" id="productGrid">
+  <!-- Product cards will be generated here by JS -->
+</div>
+
+<!-- ===== Popup ===== -->
+<div class="popup" id="popup">
+  <div class="popup-content" id="popupContent">
+    <img src="" alt="Product">
+    <h3 id="popupName"></h3>
+    <p id="popupPrice"></p>
+    <button onclick="closePopup()">Close</button>
+  </div>
+</div>
+
+<script>
+  const products = [
+    {name: "Bestie Tee 1", price: 399, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71ciAHpqTWL._UF894%2C1000_QL80_.jpg"},
+    {name: "Bestie Tee 2", price: 799, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/61jDdEE8t0L._AC_SX679_.jpg"},
+    {name: "Bestie Tee 3", price: 1200, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/typloip99arigtmcpkg4.jpg"},
+    {name: "Bestie Tee 4", price: 599, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/If-I-Was-Ment-To-Be-Controlled-combo.jpg"},
+    {name: "Bestie Tee 5", price: 450, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/9221_couple_tees_Best_Friends-350x435.jpg"},
+    {name: "Bestie Tee 6", price: 1500, img:"https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/23b46e36c520e160de9ea5cc65217d96dc7562f4/download%20(9).jpeg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/23b46e36c520e160de9ea5cc65217d96dc7562f4/download%20(7).jpeg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71WNC3j7EmL.jpg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71WNC3j7EmL.jpg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71WNC3j7EmL.jpg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71WNC3j7EmL.jpg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71WNC3j7EmL.jpg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71WNC3j7EmL.jpg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71WNC3j7EmL.jpg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71WNC3j7EmL.jpg"},
+    {name: "Bestie Tee 6", price: 1500, img: "https://raw.githubusercontent.com/Loharika1234/Friend-szone-images-2/1076904390169af2085d839cae61d77943af56bc/71WNC3j7EmL.jpg"},
+
+  ];
+
+  const productGrid = document.getElementById("productGrid");
+  const priceFilter = document.getElementById("priceFilter");
+  const sortBy = document.getElementById("sortBy");
+
+  function displayProducts(list) {
+    productGrid.innerHTML = "";
+    list.forEach(product => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <img src="${product.img}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>₹${product.price}</p>
+      `;
+      card.onclick = () => openPopup(product);
+      productGrid.appendChild(card);
+    });
+  }
+
+  function openPopup(product) {
+    document.getElementById("popup").style.display = "flex";
+    document.getElementById("popupName").textContent = product.name;
+    document.getElementById("popupPrice").textContent = "Price: ₹" + product.price;
+    document.getElementById("popupContent").querySelector("img").src = product.img;
+  }
+
+  function closePopup() {
+    document.getElementById("popup").style.display = "none";
+  }
+
+  function filterProducts() {
+    let filtered = [...products];
+    const filter = priceFilter.value;
+    if (filter === "low") filtered = filtered.filter(p => p.price < 500);
+    else if (filter === "mid") filtered = filtered.filter(p => p.price >= 500 && p.price <= 1000);
+    else if (filter === "high") filtered = filtered.filter(p => p.price > 1000);
+
+    // Sort
+    const sort = sortBy.value;
+    if (sort === "asc") filtered.sort((a,b) => a.price - b.price);
+    else if (sort === "desc") filtered.sort((a,b) => b.price - a.price);
+
+    displayProducts(filtered);
+  }
+
+  priceFilter.addEventListener("change", filterProducts);
+  sortBy.addEventListener("change", filterProducts);
+
+  // Initial display
+  displayProducts(products);
+</script>
+
+</body>
+</html>

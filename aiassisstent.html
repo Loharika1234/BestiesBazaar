@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Besties Bazaar AI Chatbot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000; /* Black background */
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chatbot-container {
+      flex: 1;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      border-top: 3px solid #00e6ff;
+    }
+
+    .chatbot-header {
+      background: #000;
+      color: #00e6ff;
+      padding: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      border-bottom: 2px solid #00e6ff;
+    }
+
+    .chatbot-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 12px 16px;
+      border-radius: 14px;
+      max-width: 70%;
+      word-wrap: break-word;
+      font-size: 15px;
+    }
+
+    .user-message {
+      background: #00e6ff;
+      color: #000;
+      align-self: flex-end;
+      text-align: right;
+      font-weight: 500;
+    }
+
+    .bot-message {
+      background: #222;
+      color: #00e6ff;
+      align-self: flex-start;
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .chatbot-input {
+      display: flex;
+      border-top: 2px solid #00e6ff;
+      background: #111;
+      padding: 10px;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      background: #111;
+      color: #fff;
+    }
+
+    #send-button {
+      background: #00e6ff;
+      color: #000;
+      border: none;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+      border-radius: 8px;
+    }
+
+    #send-button:hover {
+      background: #00cce0;
+    }
+  </style>
+</head>
+<body>
+  <div class="chatbot-container">
+    <div class="chatbot-header">🤖 Besties Bazaar AI Chatbot</div>
+    <div class="chatbot-messages" id="chatbot-messages"></div>
+    <div class="chatbot-input">
+      <input type="text" id="user-input" placeholder="Type a message...">
+      <button id="send-button">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatbotMessages = document.getElementById('chatbot-messages');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+
+    sendButton.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    function sendMessage() {
+      const userMessage = userInput.value.trim();
+      if (userMessage) {
+        displayMessage(userMessage, 'user');
+        const response = getChatbotResponse(userMessage);
+        setTimeout(() => displayMessage(response, 'bot'), 500);
+        userInput.value = '';
+      }
+    }
+
+    function displayMessage(message, sender) {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+      messageElement.textContent = message;
+      chatbotMessages.appendChild(messageElement);
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    function getChatbotResponse(message) {
+      message = message.toLowerCase();
+
+      // Greetings
+      if (["hi", "hello", "hey", "namasthe", "namaste", "good morning", "good night", "good evening"].some(g => message.includes(g))) {
+        return 'Hello Bestie 💙! Welcome to Besties Bazaar. How can I brighten your day?';
+      }
+
+      // Friendship vibes
+      if (message.includes("love") || message.includes("miss") || message.includes("bestie forever") || message.includes("bff")) {
+        return 'Besties are forever 💫💙! Don’t forget to surprise your BFF with a special gift today.';
+      }
+
+      // Product categories
+      if (message.includes("tees")) return 'Trendy Bestie Tees 👕 starting from ₹299!';
+      if (message.includes("cakes")) return 'Delicious cakes 🎂 from ₹499 – perfect for celebrations.';
+      if (message.includes("chocolates")) return 'Sweet customized chocolates 🍫 just for your bestie!';
+      if (message.includes("photo frame") || message.includes("frames")) return 'Personalized photo frames 🖼️ starting ₹399.';
+      if (message.includes("watches")) return 'Elegant watches ⌚ starting ₹799 for stylish besties.';
+
+      // Shopping queries
+      if (message.includes("show products") || message.includes("browse") || message.includes("new arrivals")) {
+        return '🛍️ Check out our shopping page for the latest arrivals!';
+      }
+      if (message.includes("offers") || message.includes("discount")) {
+        return '🔥 Ongoing offers: Flat 20% OFF on Tees, Buy 1 Get 1 on Chocolates!';
+      }
+      if (message.includes("recommend") || message.includes("suggest gift")) {
+        return 'Here’s a tip 💡: Customized photo frames & chocolates are the perfect gifts for your bestie!';
+      }
+      if (message.includes("under 300")) {
+        return 'Budget-friendly 💸: Tees under ₹300, accessories & chocolates!';
+      }
+
+      // Support / Help
+      if (message.includes("payment") || message.includes("delivery") || message.includes("help")) {
+        return 'Need help? 💙 We accept UPI, cards, COD. Delivery takes 3–5 days. For more help, visit our Contact page!';
+      }
+
+      // Cart & orders
+      if (message.includes("cart") || message.includes("order")) {
+        return '🛒 You can track your Cart & Orders directly from the Orders section.';
+      }
+
+      // Goodbyes
+      if (message.includes("bye") || message.includes("good night")) {
+        return 'Goodbye Bestie 👋💙 Sweet dreams & see you soon at Besties Bazaar!';
+      }
+
+      if (message.includes("thank")) {
+        return 'Always here for you, Bestie 💙 #BestiesForever';
+      }
+
+      // Default response
+      return 'Hmm 🤔 I didn’t catch that. Try asking about Tees, Cakes, Chocolates, Frames, or Offers!';
+    }
+  </script>
+</body>
+</html>
